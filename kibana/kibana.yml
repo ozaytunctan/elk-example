@@ -1,0 +1,12 @@
+#server.name: kibana
+##server.host: "0.0.0.0"
+#elasticsearch.hosts: ["http://elasticsearch:9200"]
+#monitoring.ui.container.elasticsearch.enabled: true
+
+
+server.name: kibana
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["${ELASTICSEARCH_HOSTS}"]
+#elasticsearch.username: elastic
+elasticsearch.password: elastic?p=7323
+monitoring.ui.container.elasticsearch.enabled: true
