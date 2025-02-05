@@ -44,10 +44,52 @@ services:
     depends_on:
       - elasticsearch
     ports:
-      - "${LOGSTASH_BEATS_PORT}:${LOGSTASH_BEATS_PORT}"
-      - "${LOGSTASH_TCP_PORT}:${LOGSTASH_TCP_PORT}/tcp"
-      - "${LOGSTASH_TCP_PORT}:${LOGSTASH_TCP_PORT}/udp"
+      - ${LOGSTASH_BEATS_PORT}:${LOGSTASH_BEATS_PORT}
+      - ${LOGSTASH_TCP_PORT}:${LOGSTASH_TCP_PORT}/tcp
+      - ${LOGSTASH_TCP_PORT}:${LOGSTASH_TCP_PORT}/udp
       - "9600:9600"
+    networks:
+      - elk-network
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+#    build:
+#      context: ./filebeat
+#      dockerfile: Dockerfile
+    container_name: filebeat
+    user: root
+    depends_on:
+      - logstash
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/log:/var/log:ro
+    networks:
+      - elk-network
+
+
+  accounting-api:
+    build:
+      context: ./accounting-service
+      dockerfile: Dockerfile
+    container_name: accounting-api
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    ports:
+      - "7070:7070"
+    networks:
+      - elk-network
+
+  income-api:
+    build:
+      context: ./income-service
+      dockerfile: Dockerfile
+    container_name: income-api
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    ports:
+      - "7071:7071"
     networks:
       - elk-network
 
