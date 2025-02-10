@@ -9,6 +9,7 @@ services:
       - cluster.name=es-docker-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
+      - xpack.security.enabled= true
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     volumes:
@@ -24,6 +25,8 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_HOSTS=${KIBANA_HOST}
+      - NODE_OPTIONS= "--no-openssl-legacy-provider"
+      - XPACK_SECURITY_ENABLED=true
     volumes:
       - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
     depends_on:
